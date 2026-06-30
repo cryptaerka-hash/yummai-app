@@ -3,495 +3,478 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YummAI — Smart Restaurant Platform</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>YummAI — платформа для ресторанов</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Archivo:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0A0A0B;
-    --surface: #131316;
-    --surface2: #1C1C21;
-    --surface3: #242429;
-    --border: rgba(255,255,255,0.07);
-    --accent: #FF6B2B;
-    --accent2: #FF9F5B;
-    --green: #22C55E;
-    --yellow: #F59E0B;
-    --blue: #3B82F6;
-    --text: #F0F0F5;
-    --muted: #8B8B9A;
-    --muted2: #5A5A6A;
-    --radius: 16px;
-    --radius-sm: 10px;
-    --radius-lg: 24px;
+    --paper: #F7F2E9;
+    --paper2: #EFE7D8;
+    --ink: #23211D;
+    --ink-soft: #5C564A;
+    --pine: #1F3A2E;
+    --pine-light: #2E5240;
+    --clay: #C4633B;
+    --clay-light: #DA8761;
+    --mustard: #C68A2E;
+    --line: rgba(35,33,29,0.14);
+    --line-strong: rgba(35,33,29,0.28);
+    --cream-card: #FFFCF6;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior:smooth; }
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Archivo', sans-serif;
+    min-height:100vh;
   }
+  ::selection { background: var(--clay); color: var(--paper); }
+
+  /* texture overlay */
+  body::before {
+    content:'';
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image: radial-gradient(rgba(35,33,29,0.025) 1px, transparent 1px);
+    background-size: 4px 4px;
+    opacity:0.5;
+  }
+
+  h1,h2,h3 { font-family:'Fraunces', serif; }
+  .mono { font-family:'Space Mono', monospace; }
 
   /* ─── NAV ─── */
   nav {
-    position: fixed; top:0; left:0; right:0; z-index:100;
-    padding: 18px 32px;
-    display: flex; align-items:center; justify-content:space-between;
-    background: rgba(10,10,11,0.85);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    padding:20px 40px;
+    display:flex; align-items:center; justify-content:space-between;
+    background: rgba(247,242,233,0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
   }
   .logo {
-    font-family: 'Manrope', sans-serif;
-    font-size: 22px; font-weight: 800;
-    display: flex; align-items:center; gap:10px;
+    font-family:'Fraunces', serif; font-weight:600; font-size:22px;
+    display:flex; align-items:baseline; gap:8px; cursor:pointer;
+    letter-spacing:-0.3px;
   }
-  .logo-icon {
-    width:36px; height:36px; border-radius:10px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    display:flex; align-items:center; justify-content:center;
-    font-size:18px;
+  .logo .mark {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:30px; height:30px; border-radius:7px;
+    background: var(--pine); color:var(--paper);
+    font-family:'Space Mono',monospace; font-size:13px; font-weight:700;
+    transform: rotate(-3deg);
   }
-  .logo span { color: var(--accent); }
-  .nav-links { display:flex; gap:8px; }
+  .logo .ai { color: var(--clay); font-style:italic; font-weight:500; }
+  .nav-links { display:flex; gap:4px; }
   .nav-link {
-    padding: 8px 16px; border-radius: 8px;
-    font-size:14px; font-weight:500; color: var(--muted);
-    cursor:pointer; transition: all 0.2s;
-    background: none; border: none;
-  }
-  .nav-link:hover { color: var(--text); background: var(--surface2); }
-  .nav-link.active { color: var(--text); background: var(--surface2); }
-  .nav-cta {
-    padding: 9px 20px; border-radius: 8px;
-    background: var(--accent); color: white;
-    font-size:14px; font-weight:600; border:none; cursor:pointer;
-    transition: all 0.2s;
-  }
-  .nav-cta:hover { background: var(--accent2); transform: translateY(-1px); }
-
-  /* ─── SCREENS ─── */
-  .screen { display:none; min-height:100vh; padding-top:72px; }
-  .screen.active { display:block; }
-
-  /* ─── HERO ─── */
-  .hero {
-    padding: 80px 32px 60px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero::before {
-    content:'';
-    position:absolute; top:-200px; left:50%; transform:translateX(-50%);
-    width:800px; height:800px; border-radius:50%;
-    background: radial-gradient(circle, rgba(255,107,43,0.12) 0%, transparent 70%);
-    pointer-events:none;
-  }
-  .hero-badge {
-    display:inline-flex; align-items:center; gap:8px;
-    padding: 6px 14px; border-radius:100px;
-    background: rgba(255,107,43,0.1); border: 1px solid rgba(255,107,43,0.25);
-    font-size:13px; font-weight:500; color: var(--accent);
-    margin-bottom:28px;
-  }
-  .hero-badge .dot { width:6px; height:6px; border-radius:50%; background:var(--accent); animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-  .hero h1 {
-    font-family:'Manrope',sans-serif;
-    font-size: clamp(42px,6vw,80px);
-    font-weight:800; line-height:1.05;
-    letter-spacing:-2px;
-    margin-bottom:24px;
-  }
-  .hero h1 .line2 { color: var(--accent); }
-  .hero p {
-    font-size:18px; color:var(--muted); line-height:1.7;
-    max-width:560px; margin: 0 auto 40px;
-  }
-  .hero-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
-  .btn-primary {
-    padding:14px 28px; border-radius:12px;
-    background: var(--accent); color:white;
-    font-size:15px; font-weight:600; border:none; cursor:pointer;
-    transition:all 0.2s; display:flex; align-items:center; gap:8px;
-  }
-  .btn-primary:hover { background:var(--accent2); transform:translateY(-2px); box-shadow:0 12px 32px rgba(255,107,43,0.3); }
-  .btn-secondary {
-    padding:14px 28px; border-radius:12px;
-    background: var(--surface2); color:var(--text);
-    font-size:15px; font-weight:600; border:1px solid var(--border); cursor:pointer;
-    transition:all 0.2s; display:flex; align-items:center; gap:8px;
-  }
-  .btn-secondary:hover { background:var(--surface3); transform:translateY(-2px); }
-
-  /* ─── STATS ROW ─── */
-  .stats-row {
-    display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
-    background:var(--border); border:1px solid var(--border);
-    border-radius:var(--radius); overflow:hidden;
-    max-width:700px; margin:60px auto 80px;
-  }
-  .stat-cell {
-    background:var(--surface); padding:28px 20px; text-align:center;
-  }
-  .stat-num {
-    font-family:'Manrope',sans-serif; font-size:38px; font-weight:800;
-    color:var(--accent); line-height:1;
-    margin-bottom:6px;
-  }
-  .stat-label { font-size:13px; color:var(--muted); }
-
-  /* ─── SECTION ─── */
-  .section { padding:80px 32px; max-width:1100px; margin:0 auto; }
-  .section-eyebrow {
-    font-size:12px; font-weight:700; letter-spacing:2px;
-    text-transform:uppercase; color:var(--accent);
-    margin-bottom:12px;
-  }
-  .section-title {
-    font-family:'Manrope',sans-serif; font-size:clamp(28px,4vw,48px);
-    font-weight:800; line-height:1.1; letter-spacing:-1px;
-    margin-bottom:16px;
-  }
-  .section-sub { font-size:16px; color:var(--muted); line-height:1.7; max-width:540px; }
-
-  /* ─── DEMO PHONE ─── */
-  .demo-section {
-    padding:80px 32px;
-    display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center;
-    max-width:1100px; margin:0 auto;
-  }
-  .phone-wrap {
-    display:flex; justify-content:center;
+    padding:9px 16px; font-size:14px; font-weight:500; color:var(--ink-soft);
+    background:none; border:none; cursor:pointer; transition:color 0.2s;
     position:relative;
   }
+  .nav-link::after {
+    content:''; position:absolute; bottom:4px; left:16px; right:16px; height:1.5px;
+    background:var(--clay); transform:scaleX(0); transition:transform 0.25s;
+    transform-origin:left;
+  }
+  .nav-link:hover { color:var(--ink); }
+  .nav-link.active { color:var(--ink); font-weight:600; }
+  .nav-link.active::after { transform:scaleX(1); }
+  .nav-cta {
+    padding:10px 20px; border-radius:8px;
+    background:var(--ink); color:var(--paper);
+    font-size:13.5px; font-weight:600; border:none; cursor:pointer;
+    transition:all 0.2s; font-family:'Archivo',sans-serif;
+  }
+  .nav-cta:hover { background:var(--clay); transform:translateY(-1px); }
+
+  .screen { display:none; min-height:100vh; padding-top:80px; position:relative; z-index:1; }
+  .screen.active { display:block; }
+
+  /* ─── HERO: ticket layout ─── */
+  .hero {
+    padding:64px 40px 0;
+    display:grid; grid-template-columns: 1.1fr 0.9fr;
+    gap:60px; max-width:1180px; margin:0 auto;
+    align-items:start;
+  }
+  .hero-eyebrow {
+    font-family:'Space Mono',monospace; font-size:12px; letter-spacing:1.5px;
+    text-transform:uppercase; color:var(--clay); margin-bottom:24px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .hero-eyebrow .rule { width:28px; height:1px; background:var(--clay); }
+  .hero h1 {
+    font-size:clamp(40px,5.5vw,70px); font-weight:600; line-height:1.05;
+    letter-spacing:-1.5px; margin-bottom:28px;
+  }
+  .hero h1 em { font-style:italic; color:var(--pine); font-weight:500; }
+  .hero p {
+    font-size:17px; color:var(--ink-soft); line-height:1.7;
+    max-width:460px; margin-bottom:36px;
+  }
+  .hero-actions { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:48px; }
+  .btn-primary {
+    padding:14px 26px; border-radius:9px;
+    background:var(--pine); color:var(--paper);
+    font-size:14.5px; font-weight:600; border:none; cursor:pointer;
+    transition:all 0.2s; font-family:'Archivo',sans-serif;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-primary:hover { background:var(--pine-light); transform:translateY(-2px); box-shadow:0 10px 24px rgba(31,58,46,0.25); }
+  .btn-outline {
+    padding:14px 26px; border-radius:9px;
+    background:transparent; color:var(--ink);
+    font-size:14.5px; font-weight:600; border:1.5px solid var(--line-strong); cursor:pointer;
+    transition:all 0.2s; font-family:'Archivo',sans-serif;
+  }
+  .btn-outline:hover { border-color:var(--ink); background:var(--cream-card); }
+
+  /* RECEIPT card — signature element */
+  .receipt {
+    background: var(--cream-card);
+    border:1px solid var(--line-strong);
+    box-shadow: 0 30px 60px -20px rgba(35,33,29,0.25), 0 2px 0 var(--paper2);
+    padding: 32px 28px 26px;
+    font-family:'Space Mono', monospace;
+    position:relative;
+    transform: rotate(1.2deg);
+  }
+  .receipt::before, .receipt::after {
+    content:'';
+    position:absolute; left:0; right:0; height:14px;
+    background-image: radial-gradient(circle at 10px 0, transparent 7px, var(--paper) 7.5px);
+    background-size: 20px 14px; background-repeat:repeat-x;
+  }
+  .receipt::before { top:-13px; transform:rotate(180deg); }
+  .receipt::after { bottom:-13px; }
+  .receipt-head { text-align:center; margin-bottom:18px; }
+  .receipt-head .rname { font-size:15px; font-weight:700; letter-spacing:2px; }
+  .receipt-head .rsub { font-size:10px; color:var(--ink-soft); margin-top:4px; }
+  .receipt-divider { border-top:1px dashed var(--line-strong); margin:14px 0; }
+  .receipt-row { display:flex; justify-content:space-between; font-size:12.5px; margin-bottom:9px; }
+  .receipt-row .qty { color:var(--ink-soft); margin-right:6px; }
+  .receipt-row .ai-tag {
+    display:inline-block; font-size:9px; background:var(--mustard); color:var(--paper);
+    padding:1px 5px; border-radius:3px; margin-left:6px; transform:translateY(-1px);
+  }
+  .receipt-total { display:flex; justify-content:space-between; font-size:15px; font-weight:700; margin-top:14px; }
+  .receipt-stamp {
+    position:absolute; top:38%; right:18px; transform:rotate(-12deg);
+    border:2px solid var(--clay); color:var(--clay); border-radius:6px;
+    padding:4px 10px; font-size:11px; font-weight:700; letter-spacing:1px;
+    opacity:0.85;
+  }
+
+  /* stat strip */
+  .stat-strip {
+    max-width:1180px; margin:80px auto 0; padding:0 40px;
+    display:grid; grid-template-columns:repeat(3,1fr);
+    border-top:1px solid var(--line-strong); border-bottom:1px solid var(--line-strong);
+  }
+  .stat-cell {
+    padding:28px 24px; border-left:1px solid var(--line);
+    display:flex; align-items:baseline; gap:14px;
+  }
+  .stat-cell:first-child { border-left:none; }
+  .stat-num { font-family:'Fraunces',serif; font-size:40px; font-weight:600; color:var(--pine); letter-spacing:-1px; }
+  .stat-label { font-size:13px; color:var(--ink-soft); line-height:1.4; max-width:140px; }
+
+  /* ─── SECTION ─── */
+  .section { padding:96px 40px; max-width:1180px; margin:0 auto; }
+  .section-head { display:grid; grid-template-columns: 200px 1fr; gap:40px; margin-bottom:56px; }
+  .section-num { font-family:'Space Mono',monospace; font-size:13px; color:var(--clay); padding-top:8px; }
+  .section-title { font-size:clamp(28px,3.6vw,44px); font-weight:600; letter-spacing:-1px; line-height:1.1; margin-bottom:14px; }
+  .section-sub { font-size:15.5px; color:var(--ink-soft); line-height:1.7; max-width:480px; }
+
+  /* problems — menu style list, not cards-with-shadow default */
+  .menu-list { border-top:1px solid var(--line-strong); }
+  .menu-entry {
+    display:grid; grid-template-columns: 56px 1fr 200px;
+    gap:24px; padding:28px 0; border-bottom:1px solid var(--line);
+    align-items:start; transition:background 0.2s;
+  }
+  .menu-entry:hover { background: rgba(196,99,59,0.04); }
+  .menu-entry .glyph { font-size:26px; line-height:1; }
+  .menu-entry h4 { font-size:18px; font-weight:600; margin-bottom:6px; font-family:'Fraunces',serif; }
+  .menu-entry p { font-size:14px; color:var(--ink-soft); line-height:1.6; }
+  .menu-entry .fix {
+    font-family:'Space Mono',monospace; font-size:12px; text-align:right;
+    color:var(--pine); align-self:center;
+  }
+  .menu-entry .fix .from { color:var(--ink-soft); text-decoration:line-through; display:block; margin-bottom:4px; }
+
+  /* flow — receipt-line steps */
+  .flow-rail { border-top:1px solid var(--line-strong); margin-top:8px; }
+  .flow-line {
+    display:grid; grid-template-columns:48px 1fr; gap:20px;
+    padding:24px 0; border-bottom:1px solid var(--line);
+  }
+  .flow-line .step-mark {
+    font-family:'Space Mono',monospace; font-size:13px; color:var(--clay);
+    padding-top:2px;
+  }
+  .flow-line h4 { font-size:17px; font-weight:600; font-family:'Fraunces',serif; margin-bottom:5px; }
+  .flow-line p { font-size:14px; color:var(--ink-soft); line-height:1.6; max-width:520px; }
+
+  /* ═══ DEMO PHONE (guest screen) ═══ */
+  .demo-section {
+    padding:96px 40px; max-width:1180px; margin:0 auto;
+    display:grid; grid-template-columns:0.9fr 1.1fr; gap:64px; align-items:center;
+  }
+  .phone-wrap { display:flex; justify-content:center; position:relative; }
   .phone {
-    width:280px; height:560px; border-radius:40px;
-    background:var(--surface); border:2px solid var(--surface3);
-    box-shadow:0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+    width:290px; height:580px; border-radius:32px;
+    background: var(--cream-card); border:2px solid var(--ink);
+    box-shadow: 14px 18px 0 var(--pine);
     overflow:hidden; position:relative;
   }
   .phone-statusbar {
-    padding:12px 20px 8px; display:flex; justify-content:space-between; align-items:center;
-    font-size:11px; font-weight:600; color:var(--muted);
+    padding:14px 22px 6px; display:flex; justify-content:space-between;
+    font-family:'Space Mono',monospace; font-size:10px; color:var(--ink-soft);
   }
-  .phone-screen { padding:0 16px; }
-  .phone-header {
-    display:flex; align-items:center; justify-content:space-between;
-    padding:12px 0 16px;
-  }
-  .phone-header h3 { font-size:18px; font-weight:700; }
+  .phone-screen { padding:0 18px; }
+  .phone-header { display:flex; justify-content:space-between; align-items:center; padding:10px 0 16px; }
+  .phone-header h3 { font-size:19px; font-weight:600; }
   .table-badge {
-    padding:4px 10px; border-radius:6px;
-    background:rgba(255,107,43,0.15); color:var(--accent);
-    font-size:11px; font-weight:600;
+    font-family:'Space Mono',monospace; padding:5px 11px; border-radius:6px;
+    background:var(--pine); color:var(--paper); font-size:11px; font-weight:700;
   }
-  .menu-category {
-    display:flex; gap:8px; margin-bottom:16px; overflow-x:auto;
-    padding-bottom:4px; scrollbar-width:none;
-  }
+  .menu-category { display:flex; gap:8px; margin-bottom:16px; overflow-x:auto; scrollbar-width:none; }
   .cat-pill {
     padding:6px 14px; border-radius:100px; font-size:12px; font-weight:600;
-    white-space:nowrap; cursor:pointer;
-    background:var(--surface2); color:var(--muted);
-    border:none; transition:all 0.2s;
+    white-space:nowrap; cursor:pointer; background:var(--paper2); color:var(--ink-soft);
+    border:none; transition:all 0.2s; font-family:'Archivo',sans-serif;
   }
-  .cat-pill.active { background:var(--accent); color:white; }
+  .cat-pill.active { background:var(--clay); color:var(--paper); }
   .menu-item {
-    background:var(--surface2); border-radius:12px;
-    padding:12px; margin-bottom:10px;
-    display:flex; gap:10px; align-items:center; cursor:pointer;
-    transition:all 0.2s; border:1px solid transparent;
+    background:var(--paper2); border-radius:12px; padding:12px;
+    margin-bottom:9px; display:flex; gap:10px; align-items:center; cursor:pointer;
+    transition:all 0.2s; border:1.5px solid transparent;
   }
-  .menu-item:hover { border-color:var(--accent); }
+  .menu-item:hover { border-color:var(--clay); }
   .menu-item-img {
-    width:56px; height:56px; border-radius:10px;
-    background:linear-gradient(135deg, #2A2A35, #1C1C24);
-    display:flex; align-items:center; justify-content:center; font-size:26px;
-    flex-shrink:0;
+    width:54px; height:54px; border-radius:9px;
+    background: linear-gradient(135deg, #E8DCC4, #D9C9A8);
+    display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0;
   }
   .menu-item-info { flex:1; }
   .menu-item-name { font-size:13px; font-weight:600; margin-bottom:3px; }
-  .menu-item-desc { font-size:11px; color:var(--muted); margin-bottom:6px; }
-  .menu-item-price { font-size:13px; font-weight:700; color:var(--accent); }
+  .menu-item-desc { font-size:11px; color:var(--ink-soft); margin-bottom:5px; }
+  .menu-item-price { font-family:'Space Mono',monospace; font-size:12.5px; font-weight:700; color:var(--clay); }
   .add-btn {
-    width:28px; height:28px; border-radius:8px;
-    background:var(--accent); color:white;
+    width:28px; height:28px; border-radius:8px; background:var(--pine); color:var(--paper);
     border:none; cursor:pointer; font-size:16px; font-weight:600;
-    display:flex; align-items:center; justify-content:center;
-    transition:transform 0.15s;
+    display:flex; align-items:center; justify-content:center; transition:transform 0.15s; flex-shrink:0;
   }
-  .add-btn:hover { transform:scale(1.1); }
+  .add-btn:hover { transform:scale(1.12); }
   .phone-cart {
-    position:absolute; bottom:16px; left:16px; right:16px;
-    background:var(--accent); border-radius:14px;
-    padding:14px 16px; display:flex; align-items:center; justify-content:space-between;
-    cursor:pointer; box-shadow:0 8px 24px rgba(255,107,43,0.4);
+    position:absolute; bottom:16px; left:16px; right:16px; background:var(--ink);
+    border-radius:13px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between;
+    cursor:pointer; box-shadow:0 8px 20px rgba(35,33,29,0.3);
   }
-  .phone-cart-left { font-size:12px; font-weight:600; }
-  .phone-cart-left span { opacity:0.75; display:block; font-size:10px; font-weight:400; }
-  .phone-cart-right { font-size:14px; font-weight:700; }
+  .phone-cart-left { font-size:12px; font-weight:600; color:var(--paper); }
+  .phone-cart-left span { opacity:0.6; display:block; font-size:10px; font-weight:400; }
+  .phone-cart-right { font-family:'Space Mono',monospace; font-size:14px; font-weight:700; color:var(--paper); }
 
-  /* ─── AI UPSELL BADGE ─── */
   .ai-badge {
-    position:absolute; right:-20px; top:120px;
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:14px; padding:12px 14px; width:160px;
-    box-shadow:0 16px 40px rgba(0,0,0,0.5);
-    animation: floatBadge 3s ease-in-out infinite;
+    position:absolute; right:-18px; top:110px;
+    background:var(--cream-card); border:1.5px solid var(--ink);
+    border-radius:12px; padding:13px 15px; width:165px;
+    box-shadow:6px 8px 0 var(--mustard);
+    animation: floatBadge 3.2s ease-in-out infinite;
   }
-  @keyframes floatBadge { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-  .ai-badge-label { font-size:9px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--accent); margin-bottom:6px; }
+  @keyframes floatBadge { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-7px) rotate(-2deg)} }
+  .ai-badge-label { font-family:'Space Mono',monospace; font-size:9px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--clay); margin-bottom:6px; }
   .ai-badge-text { font-size:12px; font-weight:600; line-height:1.4; }
-  .ai-badge-sub { font-size:10px; color:var(--green); margin-top:4px; font-weight:500; }
+  .ai-badge-sub { font-family:'Space Mono',monospace; font-size:10px; color:var(--pine); margin-top:4px; font-weight:700; }
 
-  /* ─── DEMO INFO SIDE ─── */
-  .demo-info h2 {
-    font-family:'Manrope',sans-serif; font-size:clamp(26px,3.5vw,42px);
-    font-weight:800; letter-spacing:-1px; line-height:1.1; margin-bottom:16px;
-  }
-  .demo-info p { font-size:16px; color:var(--muted); line-height:1.7; margin-bottom:32px; }
-  .feature-list { display:flex; flex-direction:column; gap:16px; }
-  .feature-item {
-    display:flex; gap:14px; align-items:flex-start;
-  }
-  .feature-icon {
-    width:40px; height:40px; border-radius:10px; flex-shrink:0;
-    display:flex; align-items:center; justify-content:center; font-size:18px;
-  }
-  .feature-icon.orange { background:rgba(255,107,43,0.1); }
-  .feature-icon.green { background:rgba(34,197,94,0.1); }
-  .feature-icon.blue { background:rgba(59,130,246,0.1); }
-  .feature-title { font-size:14px; font-weight:600; margin-bottom:3px; }
-  .feature-desc { font-size:13px; color:var(--muted); line-height:1.5; }
+  .demo-info h2 { font-size:clamp(26px,3.4vw,42px); font-weight:600; letter-spacing:-1px; line-height:1.1; margin-bottom:16px; }
+  .demo-info p { font-size:16px; color:var(--ink-soft); line-height:1.7; margin-bottom:32px; max-width:460px; }
+  .feature-list { display:flex; flex-direction:column; gap:0; border-top:1px solid var(--line-strong); }
+  .feature-item { display:flex; gap:16px; align-items:flex-start; padding:20px 0; border-bottom:1px solid var(--line); }
+  .feature-num { font-family:'Space Mono',monospace; font-size:12px; color:var(--clay); padding-top:3px; flex-shrink:0; width:22px; }
+  .feature-title { font-size:14.5px; font-weight:600; margin-bottom:4px; }
+  .feature-desc { font-size:13px; color:var(--ink-soft); line-height:1.55; }
 
-  /* ─── PROBLEMS ─── */
-  .problems-grid {
-    display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:16px; margin-top:48px;
+  /* upsell modal */
+  #upsell-modal {
+    position:fixed; inset:0; background:rgba(35,33,29,0.55); z-index:200;
+    display:none; align-items:center; justify-content:center; backdrop-filter:blur(3px);
   }
-  .problem-card {
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:var(--radius); padding:28px;
-    transition:all 0.3s;
+  .upsell-card {
+    background:var(--cream-card); border:2px solid var(--ink); border-radius:18px;
+    padding:32px; max-width:340px; width:90%; text-align:center;
+    box-shadow:10px 12px 0 var(--mustard);
   }
-  .problem-card:hover { border-color:rgba(255,107,43,0.3); transform:translateY(-4px); }
-  .problem-emoji { font-size:32px; margin-bottom:16px; }
-  .problem-title { font-size:16px; font-weight:700; margin-bottom:8px; }
-  .problem-text { font-size:14px; color:var(--muted); line-height:1.6; }
-  .problem-arrow {
-    display:flex; align-items:center; gap:8px; margin-top:16px;
-    font-size:13px; font-weight:600;
+  .upsell-card .icon { font-size:40px; margin-bottom:14px; }
+  .upsell-card .tag { font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--clay); margin-bottom:8px; }
+  .upsell-card h3 { font-size:20px; font-weight:600; margin-bottom:8px; }
+  .upsell-card .desc { color:var(--ink-soft); font-size:14px; margin-bottom:22px; line-height:1.5; }
+  .upsell-item-row {
+    background:var(--paper2); border-radius:11px; padding:14px; display:flex;
+    align-items:center; gap:12px; margin-bottom:20px; text-align:left;
   }
-  .problem-arrow .before { color:var(--muted2); text-decoration:line-through; }
-  .problem-arrow .after { color:var(--green); }
+  .upsell-item-row .ico { font-size:28px; }
+  .upsell-item-row .name { font-weight:600; font-size:14px; }
+  .upsell-item-row .sub { font-size:11px; color:var(--ink-soft); }
+  .upsell-item-row .price { font-family:'Space Mono',monospace; font-weight:700; color:var(--clay); margin-left:auto; }
+  .upsell-actions { display:flex; gap:10px; }
+  .upsell-actions button {
+    flex:1; padding:12px; border-radius:9px; font-size:13.5px; cursor:pointer; font-family:'Archivo',sans-serif;
+  }
+  .upsell-decline { background:none; border:1.5px solid var(--line-strong); color:var(--ink); font-weight:600; }
+  .upsell-accept { background:var(--pine); color:var(--paper); border:none; font-weight:700; }
 
-  /* ─── FLOW ─── */
-  .flow-grid {
-    display:grid; grid-template-columns:repeat(4,1fr); gap:0;
-    margin-top:48px; position:relative;
+  /* ═══ KITCHEN ═══ */
+  .kitchen-toolbar { display:flex; align-items:center; gap:16px; margin-bottom:24px; flex-wrap:wrap; }
+  .k-tag {
+    font-family:'Space Mono',monospace; padding:7px 14px; border-radius:8px; font-size:12px; font-weight:700;
+    border:1.5px solid;
   }
-  .flow-grid::before {
-    content:'';
-    position:absolute; top:32px; left:12.5%; right:12.5%; height:2px;
-    background:linear-gradient(90deg, var(--accent) 0%, rgba(255,107,43,0.2) 100%);
-    z-index:0;
-  }
-  .flow-step { text-align:center; padding:20px; position:relative; z-index:1; }
-  .flow-num {
-    width:64px; height:64px; border-radius:20px;
-    background:var(--surface); border:2px solid var(--border);
-    display:flex; align-items:center; justify-content:center;
-    font-size:24px; margin:0 auto 16px;
-    transition:all 0.3s;
-  }
-  .flow-step:first-child .flow-num { border-color:var(--accent); background:rgba(255,107,43,0.1); }
-  .flow-step-title { font-size:14px; font-weight:700; margin-bottom:6px; }
-  .flow-step-desc { font-size:12px; color:var(--muted); line-height:1.5; }
-
-  /* ─── KITCHEN SCREEN ─── */
-  .kitchen-grid {
-    display:grid; grid-template-columns:repeat(3,1fr); gap:12px;
-    margin-top:32px;
-  }
+  .k-tag.new { border-color:var(--clay); color:var(--clay); }
+  .k-tag.cooking { border-color:var(--mustard); color:var(--mustard); }
+  .k-tag.ready { border-color:var(--pine); color:var(--pine); }
+  .kitchen-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
   .kitchen-card {
-    background:var(--surface); border-radius:var(--radius);
-    padding:20px; border-left:4px solid;
-    cursor:pointer; transition:all 0.2s;
+    background:var(--cream-card); border:1.5px solid var(--ink); border-radius:14px;
+    padding:20px; border-left-width:5px; cursor:pointer; transition:all 0.2s;
   }
-  .kitchen-card.new { border-color:var(--accent); }
-  .kitchen-card.cooking { border-color:var(--yellow); }
-  .kitchen-card.ready { border-color:var(--green); }
-  .kitchen-card:hover { transform:translateY(-2px); }
+  .kitchen-card.new { border-left-color:var(--clay); }
+  .kitchen-card.cooking { border-left-color:var(--mustard); }
+  .kitchen-card.ready { border-left-color:var(--pine); }
+  .kitchen-card:hover { transform:translateY(-3px); box-shadow:5px 7px 0 var(--line-strong); }
   .kc-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-  .kc-table { font-size:13px; font-weight:700; }
-  .kc-time { font-size:11px; color:var(--muted); }
+  .kc-table { font-family:'Fraunces',serif; font-size:15px; font-weight:600; }
+  .kc-time { font-family:'Space Mono',monospace; font-size:10.5px; color:var(--ink-soft); }
   .kc-status {
-    display:inline-flex; padding:3px 8px; border-radius:6px;
-    font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;
-    margin-bottom:10px;
+    display:inline-flex; padding:3px 9px; border-radius:6px; font-family:'Space Mono',monospace;
+    font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;
   }
-  .kc-status.new { background:rgba(255,107,43,0.15); color:var(--accent); }
-  .kc-status.cooking { background:rgba(245,158,11,0.15); color:var(--yellow); }
-  .kc-status.ready { background:rgba(34,197,94,0.15); color:var(--green); }
-  .kc-items { font-size:12px; color:var(--muted); line-height:1.8; }
-  .kc-items strong { color:var(--text); }
+  .kc-status.new { background:rgba(196,99,59,0.12); color:var(--clay); }
+  .kc-status.cooking { background:rgba(198,138,46,0.12); color:var(--mustard); }
+  .kc-status.ready { background:rgba(31,58,46,0.1); color:var(--pine); }
+  .kc-items { font-size:13px; color:var(--ink-soft); line-height:1.8; }
+  .kc-items strong { color:var(--ink); }
   .kc-action {
-    margin-top:12px; width:100%; padding:8px;
-    border-radius:8px; font-size:12px; font-weight:600;
-    border:none; cursor:pointer; transition:all 0.2s;
+    margin-top:14px; width:100%; padding:9px; border-radius:8px; font-size:12.5px; font-weight:700;
+    border:none; cursor:pointer; transition:all 0.2s; font-family:'Archivo',sans-serif;
   }
-  .new .kc-action { background:var(--accent); color:white; }
-  .cooking .kc-action { background:var(--yellow); color:#000; }
-  .ready .kc-action { background:var(--green); color:#000; }
+  .new .kc-action { background:var(--clay); color:var(--paper); }
+  .cooking .kc-action { background:var(--mustard); color:var(--ink); }
+  .ready .kc-action { background:var(--pine); color:var(--paper); }
 
-  /* ─── ANALYTICS ─── */
-  .analytics-grid {
-    display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-top:32px;
-  }
-  .analytics-card {
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:var(--radius); padding:24px;
-  }
-  .ac-title { font-size:13px; font-weight:600; color:var(--muted); margin-bottom:20px; }
-  .chart-bars { display:flex; align-items:flex-end; gap:8px; height:120px; }
-  .bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; }
-  .bar {
-    width:100%; border-radius:6px 6px 0 0;
-    background:linear-gradient(to top, var(--accent), var(--accent2));
-    min-height:8px; transition:height 0.5s ease;
-    position:relative;
-  }
-  .bar.dimmed { background:var(--surface3); }
-  .bar-label { font-size:10px; color:var(--muted); }
-  .metrics-list { display:flex; flex-direction:column; gap:12px; margin-top:16px; }
+  /* ═══ ANALYTICS ═══ */
+  .analytics-grid { display:grid; grid-template-columns:1.4fr 1fr; gap:20px; }
+  .analytics-card { background:var(--cream-card); border:1.5px solid var(--ink); border-radius:16px; padding:26px; }
+  .ac-title { font-family:'Space Mono',monospace; font-size:12px; color:var(--ink-soft); margin-bottom:22px; letter-spacing:0.5px; }
+  .chart-bars { display:flex; align-items:flex-end; gap:9px; height:120px; }
+  .bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:7px; }
+  .bar { width:100%; border-radius:4px 4px 0 0; background:var(--pine); min-height:8px; transition:height 0.5s ease; }
+  .bar.dimmed { background:var(--paper2); }
+  .bar-label { font-family:'Space Mono',monospace; font-size:10px; color:var(--ink-soft); }
+  .metrics-list { display:flex; flex-direction:column; gap:13px; margin-top:24px; border-top:1px solid var(--line); padding-top:18px; }
   .metric-row { display:flex; justify-content:space-between; align-items:center; }
-  .metric-label { font-size:13px; color:var(--muted); }
-  .metric-val { font-size:15px; font-weight:700; }
-  .metric-val.green { color:var(--green); }
-  .metric-val.orange { color:var(--accent); }
-  .top-dishes { display:flex; flex-direction:column; gap:10px; }
+  .metric-label { font-size:13px; color:var(--ink-soft); }
+  .metric-val { font-family:'Space Mono',monospace; font-size:15px; font-weight:700; }
+  .metric-val.green { color:var(--pine); }
+  .metric-val.orange { color:var(--clay); }
+  .top-dishes { display:flex; flex-direction:column; gap:11px; }
   .dish-row { display:flex; align-items:center; gap:10px; }
-  .dish-rank { font-size:11px; font-weight:700; color:var(--muted2); width:16px; }
+  .dish-rank { font-family:'Space Mono',monospace; font-size:11px; font-weight:700; color:var(--ink-soft); width:16px; }
   .dish-name { font-size:13px; flex:1; }
-  .dish-bar-wrap { width:60px; height:6px; background:var(--surface3); border-radius:3px; overflow:hidden; }
-  .dish-bar { height:100%; border-radius:3px; background:var(--accent); }
-  .dish-pct { font-size:11px; color:var(--muted); width:28px; text-align:right; }
+  .dish-bar-wrap { width:60px; height:6px; background:var(--paper2); border-radius:3px; overflow:hidden; }
+  .dish-bar { height:100%; border-radius:3px; background:var(--clay); }
+  .dish-pct { font-family:'Space Mono',monospace; font-size:11px; color:var(--ink-soft); width:28px; text-align:right; }
+  .insight-box { margin-top:20px; padding-top:16px; border-top:1px solid var(--line); }
+  .insight-label { font-family:'Space Mono',monospace; font-size:10.5px; color:var(--ink-soft); margin-bottom:8px; font-weight:700; letter-spacing:0.5px; }
+  .insight-text { font-size:13.5px; color:var(--ink); line-height:1.55; }
 
-  /* ─── PRICING ─── */
-  .pricing-grid {
-    display:grid; grid-template-columns:repeat(3,1fr); gap:20px;
-    margin-top:48px;
-  }
+  /* ═══ PRICING ═══ */
+  .pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0; border-top:1.5px solid var(--ink); border-left:1.5px solid var(--ink); }
   .pricing-card {
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:var(--radius-lg); padding:32px;
-    position:relative; transition:all 0.3s;
+    background:var(--cream-card); padding:32px; position:relative;
+    border-right:1.5px solid var(--ink); border-bottom:1.5px solid var(--ink);
+    transition:all 0.25s;
   }
-  .pricing-card.featured {
-    border-color:var(--accent); background:rgba(255,107,43,0.05);
-  }
+  .pricing-card.featured { background:#FBF5E8; }
   .pricing-card.featured::before {
-    content:'ПОПУЛЯРНЫЙ';
-    position:absolute; top:-12px; left:50%; transform:translateX(-50%);
-    background:var(--accent); color:white;
-    font-size:9px; font-weight:700; letter-spacing:2px;
-    padding:4px 14px; border-radius:100px;
+    content:'★ ВЫБИРАЮТ ЧАЩЕ';
+    position:absolute; top:0; left:0; right:0;
+    background:var(--clay); color:var(--paper);
+    font-family:'Space Mono',monospace; font-size:9.5px; font-weight:700; letter-spacing:1.5px;
+    padding:6px 0; text-align:center;
   }
-  .pricing-card:hover { transform:translateY(-4px); }
-  .plan-name { font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
-  .plan-price {
-    font-family:'Manrope',sans-serif; font-size:38px; font-weight:800;
-    line-height:1; margin-bottom:4px;
-  }
-  .plan-price span { font-size:14px; font-weight:400; color:var(--muted); }
-  .plan-period { font-size:12px; color:var(--muted); margin-bottom:24px; }
+  .pricing-card.featured { padding-top:48px; }
+  .pricing-card:hover { background:#FBF5E8; }
+  .plan-name { font-family:'Space Mono',monospace; font-size:11.5px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--ink-soft); margin-bottom:14px; }
+  .plan-price { font-family:'Fraunces',serif; font-size:36px; font-weight:600; line-height:1; margin-bottom:4px; }
+  .plan-price span { font-family:'Archivo',sans-serif; font-size:13px; font-weight:400; color:var(--ink-soft); }
+  .plan-period { font-size:12px; color:var(--ink-soft); margin-bottom:26px; }
   .plan-features { list-style:none; margin-bottom:28px; display:flex; flex-direction:column; gap:10px; }
-  .plan-features li { font-size:13px; color:var(--muted); display:flex; gap:8px; align-items:flex-start; }
-  .plan-features li::before { content:'✓'; color:var(--green); font-weight:700; flex-shrink:0; }
+  .plan-features li { font-size:13px; color:var(--ink-soft); display:flex; gap:8px; align-items:flex-start; }
+  .plan-features li::before { content:'—'; color:var(--clay); font-weight:700; flex-shrink:0; }
   .plan-btn {
-    width:100%; padding:12px; border-radius:10px;
-    font-size:14px; font-weight:600; border:none; cursor:pointer; transition:all 0.2s;
+    width:100%; padding:13px; border-radius:9px; font-size:14px; font-weight:600;
+    border:none; cursor:pointer; transition:all 0.2s; font-family:'Archivo',sans-serif;
+    display:flex; align-items:center; justify-content:center; gap:8px;
   }
-  .plan-btn.outline { background:none; border:1px solid var(--border); color:var(--text); }
-  .plan-btn.outline:hover { border-color:var(--accent); color:var(--accent); }
-  .plan-btn.filled { background:var(--accent); color:white; }
-  .plan-btn.filled:hover { background:var(--accent2); }
+  .plan-btn.outline { background:none; border:1.5px solid var(--line-strong); color:var(--ink); }
+  .plan-btn.outline:hover { border-color:var(--clay); color:var(--clay); }
+  .plan-btn.filled { background:var(--pine); color:var(--paper); }
+  .plan-btn.filled:hover { background:var(--clay); }
+  .plan-btn .tg-icon { width:16px; height:16px; flex-shrink:0; }
 
-  /* ─── SCOPE DOC ─── */
+  /* ═══ SCOPE DOC ═══ */
+  .scope-wrap { max-width:760px; margin:0 auto; }
   .scope-section {
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:var(--radius-lg); padding:40px;
-    margin-top:48px; max-width:800px; margin-left:auto; margin-right:auto;
+    background:var(--cream-card); border:1.5px solid var(--ink); border-radius:18px;
+    padding:44px; box-shadow:8px 10px 0 var(--line-strong);
   }
-  .scope-section h3 { font-family:'Manrope',sans-serif; font-size:22px; font-weight:700; margin-bottom:24px; }
-  .scope-block { margin-bottom:28px; }
-  .scope-block h4 { font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--accent); margin-bottom:10px; }
-  .scope-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
-  .scope-list li { font-size:14px; color:var(--muted); padding-left:16px; position:relative; line-height:1.5; }
-  .scope-list li::before { content:'→'; position:absolute; left:0; color:var(--accent); }
-  .scope-divider { height:1px; background:var(--border); margin:20px 0; }
-  .scope-footer { font-size:13px; color:var(--muted2); line-height:1.6; }
+  .scope-section h3 { font-size:23px; font-weight:600; margin-bottom:28px; }
+  .scope-block { margin-bottom:30px; }
+  .scope-block h4 { font-family:'Space Mono',monospace; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--clay); margin-bottom:12px; }
+  .scope-list { list-style:none; display:flex; flex-direction:column; gap:9px; }
+  .scope-list li { font-size:14px; color:var(--ink-soft); padding-left:18px; position:relative; line-height:1.55; }
+  .scope-list li::before { content:'→'; position:absolute; left:0; color:var(--clay); }
+  .scope-divider { height:1px; background:var(--line); margin:22px 0; }
+  .scope-footer { font-size:13px; color:var(--ink-soft); line-height:1.6; }
+  .scope-footer a { color: var(--pine); font-weight: 700; text-decoration: none; border-bottom: 1.5px solid var(--clay); }
+  .scope-footer a:hover { color: var(--clay); }
 
-  /* ─── TABS for kitchen/analytics ─── */
-  .demo-tabs {
-    display:flex; gap:8px; margin-bottom:24px;
-    border-bottom:1px solid var(--border); padding-bottom:0;
-  }
-  .demo-tab {
-    padding:10px 20px; border-radius:10px 10px 0 0;
-    font-size:13px; font-weight:600; color:var(--muted);
-    background:none; border:none; cursor:pointer; transition:all 0.2s;
-    border-bottom:2px solid transparent; margin-bottom:-1px;
-  }
-  .demo-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
-  .tab-content { display:none; }
-  .tab-content.active { display:block; }
+  /* ═══ FOOTER ═══ */
+  footer { border-top:1.5px solid var(--ink); padding:56px 40px 36px; text-align:center; }
+  .footer-logo { font-family:'Fraunces',serif; font-size:26px; font-weight:600; margin-bottom:10px; }
+  .footer-logo .ai { color:var(--clay); font-style:italic; }
+  .footer-tagline { font-size:14px; color:var(--ink-soft); margin-bottom:36px; }
+  .footer-links { display:flex; gap:28px; justify-content:center; flex-wrap:wrap; }
+  .footer-link { font-size:13px; color:var(--ink-soft); cursor:pointer; font-weight:500; }
+  .footer-link:hover { color:var(--clay); }
+  .footer-bottom { margin-top:36px; font-family:'Space Mono',monospace; font-size:11px; color:var(--ink-soft); opacity:0.7; }
 
-  /* ─── FOOTER ─── */
-  footer {
-    border-top:1px solid var(--border);
-    padding:48px 32px 32px;
-    text-align:center;
-  }
-  .footer-logo {
-    font-family:'Manrope',sans-serif; font-size:24px; font-weight:800;
-    margin-bottom:12px;
-  }
-  .footer-logo span { color:var(--accent); }
-  .footer-tagline { font-size:14px; color:var(--muted); margin-bottom:32px; }
-  .footer-links { display:flex; gap:24px; justify-content:center; flex-wrap:wrap; }
-  .footer-link { font-size:13px; color:var(--muted); cursor:pointer; }
-  .footer-link:hover { color:var(--text); }
-  .footer-bottom { margin-top:32px; font-size:12px; color:var(--muted2); }
-
-  /* responsive */
-  @media(max-width:768px) {
+  @media(max-width:900px) {
+    .hero { grid-template-columns:1fr; }
     .demo-section { grid-template-columns:1fr; }
-    .flow-grid { grid-template-columns:repeat(2,1fr); }
-    .flow-grid::before { display:none; }
+    .section-head { grid-template-columns:1fr; gap:14px; }
     .pricing-grid { grid-template-columns:1fr; }
     .analytics-grid { grid-template-columns:1fr; }
     .kitchen-grid { grid-template-columns:1fr; }
-    nav { padding:14px 16px; }
+    .stat-strip { grid-template-columns:1fr; }
+    .stat-cell { border-left:none; border-top:1px solid var(--line); }
+    .stat-cell:first-child { border-top:none; }
+    nav { padding:14px 18px; }
     .nav-links { display:none; }
-    .hero h1 { font-size:36px; }
-    .phone { width:240px; height:480px; }
+    .menu-entry { grid-template-columns:40px 1fr; }
+    .menu-entry .fix { grid-column:2; text-align:left; padding-top:4px; }
+    .phone { width:250px; height:500px; }
     .ai-badge { display:none; }
-    .stats-row { grid-template-columns:1fr; }
   }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <div class="logo">
-    <div class="logo-icon">🍽️</div>
-    Yumm<span>AI</span>
+  <div class="logo" onclick="showScreen('home')">
+    <span class="mark">У</span>
+    Yumm<span class="ai">AI</span>
   </div>
   <div class="nav-links">
     <button class="nav-link active" onclick="showScreen('home')">Главная</button>
@@ -500,212 +483,213 @@
     <button class="nav-link" onclick="showScreen('analytics')">Аналитика</button>
     <button class="nav-link" onclick="showScreen('scope')">Бриф</button>
   </div>
-  <button class="nav-cta" onclick="showScreen('scope')">Для iTechnolabs →</button>
+  <button class="nav-cta" onclick="goTelegram()">Написать в Telegram →</button>
 </nav>
 
-<!-- ═══════════════════════════════════════════════════════
-     SCREEN: HOME
-═══════════════════════════════════════════════════════ -->
+<!-- ═══════════ HOME ═══════════ -->
 <div class="screen active" id="screen-home">
 
   <div class="hero">
-    <div class="hero-badge">
-      <span class="dot"></span>
-      Самая технологичная ресторанная платформа Центральной Азии
+    <div>
+      <div class="hero-eyebrow"><span class="rule"></span>Платформа для ресторанов Центральной Азии</div>
+      <h1>Ресторан подаёт блюда.<br><em>Не таскает заказы.</em></h1>
+      <p>QR-меню, AI-рекомендации, кухонный экран и аналитика — без официанта-узкого места между гостем и его заказом.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="showScreen('guest')">▸ Открыть демо стола</button>
+        <button class="btn-outline" onclick="showScreen('scope')">Читать бриф</button>
+      </div>
     </div>
-    <h1>
-      Ресторан работает.<br>
-      <span class="line2">Вы зарабатываете.</span>
-    </h1>
-    <p>QR-меню, AI-апселл, кухонный дисплей и аналитика в одной платформе. Средний чек растёт на 23% с первого дня.</p>
-    <div class="hero-actions">
-      <button class="btn-primary" onclick="showScreen('guest')">▶ Смотреть демо</button>
-      <button class="btn-secondary" onclick="showScreen('scope')">Документация →</button>
+
+    <div class="phone-wrap" style="margin-top:8px;">
+      <div class="receipt">
+        <div class="receipt-head">
+          <div class="rname">YUMMAI · СТОЛ 07</div>
+          <div class="rsub">чек № 0461 — пятница, 19:42</div>
+        </div>
+        <div class="receipt-divider"></div>
+        <div class="receipt-row"><span><span class="qty">2×</span>Манты с бараниной</span><span>76 000</span></div>
+        <div class="receipt-row"><span><span class="qty">1×</span>Лагман</span><span>32 000</span></div>
+        <div class="receipt-row"><span><span class="qty">2×</span>Зелёный чай<span class="ai-tag">AI</span></span><span>16 000</span></div>
+        <div class="receipt-divider"></div>
+        <div class="receipt-total"><span>ИТОГО</span><span>124 000 сум</span></div>
+        <div class="receipt-stamp">+23%</div>
+      </div>
     </div>
   </div>
 
-  <div class="stats-row">
+  <div class="stat-strip">
     <div class="stat-cell">
       <div class="stat-num">+23%</div>
-      <div class="stat-label">рост среднего чека через AI</div>
+      <div class="stat-label">средний чек растёт за счёт AI-рекомендаций</div>
     </div>
     <div class="stat-cell">
       <div class="stat-num">0</div>
-      <div class="stat-label">официантов нужно для приёма заказа</div>
+      <div class="stat-label">официантов нужно, чтобы принять заказ со стола</div>
     </div>
     <div class="stat-cell">
       <div class="stat-num">4 мин</div>
-      <div class="stat-label">среднее время обработки заказа</div>
+      <div class="stat-label">среднее время от заказа до кухни</div>
     </div>
   </div>
 
-  <div class="section" style="max-width:1100px;">
-    <div class="section-eyebrow">Проблема</div>
-    <div class="section-title">Рестораны теряют деньги<br>на каждом шаге</div>
-    <div class="section-sub">Официанты не апселлят. Заказы путаются. Гость ждёт и уходит недовольным.</div>
+  <div class="section">
+    <div class="section-head">
+      <div class="section-num">01 — проблема</div>
+      <div>
+        <div class="section-title">Деньги уходят<br>между столом и кассой</div>
+        <div class="section-sub">Каждый из этих пунктов — реальная потеря выручки, которую ресторан даже не замечает.</div>
+      </div>
+    </div>
 
-    <div class="problems-grid">
-      <div class="problem-card">
-        <div class="problem-emoji">⏳</div>
-        <div class="problem-title">Гость ждёт официанта</div>
-        <div class="problem-text">10-15 минут чтобы сделать заказ. Ещё 15 — чтобы получить счёт. Гость уходит и не возвращается.</div>
-        <div class="problem-arrow">
-          <span class="before">15 минут</span>
-          <span>→</span>
-          <span class="after">30 секунд</span>
+    <div class="menu-list">
+      <div class="menu-entry">
+        <div class="glyph">⏳</div>
+        <div>
+          <h4>Гость ждёт официанта</h4>
+          <p>10–15 минут, чтобы сделать заказ, ещё столько же — чтобы получить счёт. Гость уходит недовольным и не возвращается.</p>
         </div>
+        <div class="fix"><span class="from">15 МИН</span>30 СЕК</div>
       </div>
-      <div class="problem-card">
-        <div class="problem-emoji">💸</div>
-        <div class="problem-title">Официант не апселлит</div>
-        <div class="problem-text">Забыл предложить десерт. Не знал про акцию. Или просто не хотел. Каждый стол теряет 20-30% выручки.</div>
-        <div class="problem-arrow">
-          <span class="before">-30% чек</span>
-          <span>→</span>
-          <span class="after">AI делает это</span>
+      <div class="menu-entry">
+        <div class="glyph">💸</div>
+        <div>
+          <h4>Официант не предлагает допродажу</h4>
+          <p>Забыл про десерт, не знал про акцию или просто было лень. Каждый стол теряет 20–30% потенциального чека.</p>
         </div>
+        <div class="fix"><span class="from">−30%</span>AI ПРЕДЛАГАЕТ</div>
       </div>
-      <div class="problem-card">
-        <div class="problem-emoji">📋</div>
-        <div class="problem-title">Бумажное меню дорогое</div>
-        <div class="problem-text">Изменил цену — надо в типографию. Закончилось блюдо — некому предупредить гостя заранее.</div>
-        <div class="problem-arrow">
-          <span class="before">3-7 дней</span>
-          <span>→</span>
-          <span class="after">30 секунд онлайн</span>
+      <div class="menu-entry">
+        <div class="glyph">📋</div>
+        <div>
+          <h4>Бумажное меню стоит дорого</h4>
+          <p>Изменилась цена — нужно ехать в типографию. Закончилось блюдо — гостя предупреждают, когда он уже сделал заказ.</p>
         </div>
+        <div class="fix"><span class="from">3–7 ДНЕЙ</span>30 СЕК ОНЛАЙН</div>
       </div>
-      <div class="problem-card">
-        <div class="problem-emoji">🍽️</div>
-        <div class="problem-title">Хаос на кухне</div>
-        <div class="problem-text">Официант кричит через окошко. Листок теряется. Блюдо уходит не на тот стол. В час пик — катастрофа.</div>
-        <div class="problem-arrow">
-          <span class="before">бумага + крик</span>
-          <span>→</span>
-          <span class="after">KDS дисплей</span>
+      <div class="menu-entry">
+        <div class="glyph">🍽️</div>
+        <div>
+          <h4>На кухне — хаос</h4>
+          <p>Официант кричит через окно раздачи, листок размокает от пара, заказ уходит не на тот стол. В час пик это срывает смену.</p>
         </div>
+        <div class="fix"><span class="from">БУМАГА + КРИК</span>ЭКРАН НА КУХНЕ</div>
       </div>
-      <div class="problem-card">
-        <div class="problem-emoji">📊</div>
-        <div class="problem-title">Работа вслепую</div>
-        <div class="problem-text">Не знает какое блюдо самое прибыльное. Не видит в какое время пик. Принимает решения наощупь.</div>
-        <div class="problem-arrow">
-          <span class="before">нет данных</span>
-          <span>→</span>
-          <span class="after">реальная аналитика</span>
+      <div class="menu-entry">
+        <div class="glyph">📊</div>
+        <div>
+          <h4>Решения принимаются на глаз</h4>
+          <p>Владелец не знает, какое блюдо приносит больше всего прибыли и в какие часы зал заполнен. Управление вслепую.</p>
         </div>
+        <div class="fix"><span class="from">НЕТ ДАННЫХ</span>ЦИФРЫ В РЕАЛЬНОМ ВРЕМЕНИ</div>
       </div>
-      <div class="problem-card">
-        <div class="problem-emoji">💳</div>
-        <div class="problem-title">"Терминал сломан"</div>
-        <div class="problem-text">Только наличные. Гость без кэша уходит. В 2025 году это просто потеря клиента.</div>
-        <div class="problem-arrow">
-          <span class="before">только наличные</span>
-          <span>→</span>
-          <span class="after">Click / Payme</span>
+      <div class="menu-entry">
+        <div class="glyph">💳</div>
+        <div>
+          <h4>«Терминал не работает»</h4>
+          <p>Гость без наличных — это упущенный заказ. В 2026 году это уже не мелкое неудобство, а прямая потеря клиента.</p>
         </div>
+        <div class="fix"><span class="from">ТОЛЬКО НАЛИЧНЫЕ</span>CLICK / PAYME</div>
       </div>
     </div>
   </div>
 
-  <div class="section" style="background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border); max-width:none; padding:80px 32px;">
-    <div style="max-width:1100px; margin:0 auto;">
-      <div class="section-eyebrow">Как работает</div>
-      <div class="section-title">4 шага от стола до кухни</div>
-      <div class="flow-grid">
-        <div class="flow-step">
-          <div class="flow-num">📱</div>
-          <div class="flow-step-title">QR на столе</div>
-          <div class="flow-step-desc">Гость сканирует — открывается меню с фото и описаниями</div>
+  <div class="section" style="background:var(--paper2); max-width:none; padding:96px 40px;">
+    <div style="max-width:1180px; margin:0 auto;">
+      <div class="section-head">
+        <div class="section-num">02 — механика</div>
+        <div>
+          <div class="section-title">От стола до кухни — четыре шага</div>
+          <div class="section-sub">Каждый шаг убирает одного посредника между гостем и его заказом.</div>
         </div>
-        <div class="flow-step">
-          <div class="flow-num">🤖</div>
-          <div class="flow-step-title">AI предлагает</div>
-          <div class="flow-step-desc">«К этому блюду берут также...» — апселл без официанта</div>
+      </div>
+      <div class="flow-rail">
+        <div class="flow-line">
+          <div class="step-mark">QR</div>
+          <div><h4>Гость сканирует код на столе</h4><p>Открывается меню с фото и описанием — без установки приложения, прямо в браузере телефона.</p></div>
         </div>
-        <div class="flow-step">
-          <div class="flow-num">🔔</div>
-          <div class="flow-step-title">Кухня получает</div>
-          <div class="flow-step-desc">Мгновенный алерт на KDS — повар видит заказ в реальном времени</div>
+        <div class="flow-line">
+          <div class="step-mark">AI</div>
+          <div><h4>Платформа предлагает дополнение</h4><p>«К мантам обычно берут зелёный чай» — рекомендация по реальной истории заказов, без участия официанта.</p></div>
         </div>
-        <div class="flow-step">
-          <div class="flow-num">💳</div>
-          <div class="flow-step-title">Оплата одним касанием</div>
-          <div class="flow-step-desc">Click или Payme — без терминала, без очереди, без кэша</div>
+        <div class="flow-line">
+          <div class="step-mark">KDS</div>
+          <div><h4>Заказ появляется на кухне</h4><p>Мгновенный сигнал на экран повара — без бумаги и без крика через раздачу, даже в час пик.</p></div>
+        </div>
+        <div class="flow-line">
+          <div class="step-mark">UZS</div>
+          <div><h4>Гость платит сам</h4><p>Click или Payme в один касание — без ожидания терминала и без сдачи наличными.</p></div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="section">
-    <div class="section-eyebrow">Тарифы</div>
-    <div class="section-title">Прозрачное ценообразование</div>
-    <div class="section-sub">Окупается с первого месяца за счёт роста среднего чека</div>
+    <div class="section-head">
+      <div class="section-num">03 — тарифы</div>
+      <div>
+        <div class="section-title">Стоимость одной смены официанта</div>
+        <div class="section-sub">Подписка окупается в первый месяц за счёт роста среднего чека.</div>
+      </div>
+    </div>
 
     <div class="pricing-grid">
       <div class="pricing-card">
         <div class="plan-name">Старт</div>
-        <div class="plan-price">1 500 000 <span>UZS</span></div>
+        <div class="plan-price">1 500 000<span> UZS</span></div>
         <div class="plan-period">в месяц · до 2 точек</div>
         <ul class="plan-features">
           <li>QR-меню с фото</li>
           <li>Приём заказов онлайн</li>
-          <li>Оплата Click/Payme</li>
+          <li>Оплата Click / Payme</li>
           <li>Базовая аналитика</li>
-          <li>1 устройство на кухне</li>
+          <li>1 экран на кухне</li>
         </ul>
-        <button class="plan-btn outline">Начать</button>
+        <button class="plan-btn outline" onclick="goTelegram()">Обсудить в Telegram</button>
       </div>
       <div class="pricing-card featured">
         <div class="plan-name">Бизнес</div>
-        <div class="plan-price">2 000 000 <span>UZS</span></div>
+        <div class="plan-price">2 000 000<span> UZS</span></div>
         <div class="plan-period">в месяц · до 5 точек</div>
         <ul class="plan-features">
-          <li>Всё из Старт +</li>
-          <li>AI-апселл движок</li>
-          <li>Kitchen Display System</li>
+          <li>Всё из тарифа Старт</li>
+          <li>AI-движок рекомендаций</li>
+          <li>Экран для кухни (KDS)</li>
           <li>Расширенная аналитика</li>
-          <li>Интеграция R-Keeper</li>
+          <li>Интеграция с R-Keeper</li>
           <li>Приоритетная поддержка</li>
         </ul>
-        <button class="plan-btn filled" onclick="showScreen('scope')">Выбрать</button>
+        <button class="plan-btn filled" onclick="goTelegram()">Обсудить в Telegram</button>
       </div>
       <div class="pricing-card">
         <div class="plan-name">Сеть</div>
-        <div class="plan-price">2 500 000 <span>UZS</span></div>
-        <div class="plan-period">в месяц · неограничено</div>
+        <div class="plan-price">2 500 000<span> UZS</span></div>
+        <div class="plan-period">в месяц · без ограничений</div>
         <ul class="plan-features">
-          <li>Всё из Бизнес +</li>
-          <li>Мультибренд управление</li>
+          <li>Всё из тарифа Бизнес</li>
+          <li>Управление несколькими брендами</li>
           <li>Белый лейбл</li>
-          <li>API доступ</li>
+          <li>Доступ к API</li>
           <li>Выделенный менеджер</li>
-          <li>Кастомная интеграция</li>
         </ul>
-        <button class="plan-btn outline">Связаться</button>
+        <button class="plan-btn outline" onclick="goTelegram()">Обсудить в Telegram</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     SCREEN: GUEST DEMO
-═══════════════════════════════════════════════════════ -->
+<!-- ═══════════ GUEST DEMO ═══════════ -->
 <div class="screen" id="screen-guest">
   <div class="demo-section">
     <div class="phone-wrap">
       <div class="phone">
-        <div class="phone-statusbar">
-          <span>9:41</span>
-          <span>📶 🔋</span>
-        </div>
+        <div class="phone-statusbar"><span>9:41</span><span>YUMMAI</span></div>
         <div class="phone-screen">
           <div class="phone-header">
             <div>
-              <div style="font-size:11px;color:var(--muted);margin-bottom:2px;">🍽️ Smart Table</div>
+              <div style="font-family:'Space Mono',monospace; font-size:10.5px;color:var(--ink-soft);margin-bottom:3px;">SMART TABLE</div>
               <h3>Меню</h3>
             </div>
-            <div class="table-badge">Стол №7</div>
+            <div class="table-badge">СТОЛ №7</div>
           </div>
           <div class="menu-category">
             <button class="cat-pill active" onclick="filterMenu(this,'all')">Всё</button>
@@ -713,9 +697,8 @@
             <button class="cat-pill" onclick="filterMenu(this,'salad')">Салаты</button>
             <button class="cat-pill" onclick="filterMenu(this,'drink')">Напитки</button>
           </div>
-
           <div id="menu-items">
-            <div class="menu-item" data-cat="hot" onclick="addToCart(this,'Манты с бараниной','38 000')">
+            <div class="menu-item" data-cat="hot" onclick="addToCart(this,'Манты с бараниной','38000')">
               <div class="menu-item-img">🥟</div>
               <div class="menu-item-info">
                 <div class="menu-item-name">Манты с бараниной</div>
@@ -724,7 +707,7 @@
               </div>
               <button class="add-btn">+</button>
             </div>
-            <div class="menu-item" data-cat="hot" onclick="addToCart(this,'Лагман','32 000')">
+            <div class="menu-item" data-cat="hot" onclick="addToCart(this,'Лагман','32000')">
               <div class="menu-item-img">🍜</div>
               <div class="menu-item-info">
                 <div class="menu-item-name">Лагман</div>
@@ -733,7 +716,7 @@
               </div>
               <button class="add-btn">+</button>
             </div>
-            <div class="menu-item" data-cat="salad" onclick="addToCart(this,'Ачичук','18 000')">
+            <div class="menu-item" data-cat="salad" onclick="addToCart(this,'Ачичук','18000')">
               <div class="menu-item-img">🥗</div>
               <div class="menu-item-info">
                 <div class="menu-item-name">Ачичук</div>
@@ -742,11 +725,11 @@
               </div>
               <button class="add-btn">+</button>
             </div>
-            <div class="menu-item" data-cat="drink" onclick="addToCart(this,'Зелёный чай','8 000')">
+            <div class="menu-item" data-cat="drink" onclick="addToCart(this,'Зелёный чай','8000')">
               <div class="menu-item-img">🍵</div>
               <div class="menu-item-info">
                 <div class="menu-item-name">Зелёный чай</div>
-                <div class="menu-item-desc">Чайник, 500мл</div>
+                <div class="menu-item-desc">Чайник, 500 мл</div>
                 <div class="menu-item-price">8 000 сум</div>
               </div>
               <button class="add-btn">+</button>
@@ -754,380 +737,266 @@
           </div>
         </div>
         <div class="phone-cart" id="cart-bar" style="display:none;" onclick="showCart()">
-          <div class="phone-cart-left">
-            <span id="cart-count">0 позиции</span>
-            Ваш заказ
-          </div>
+          <div class="phone-cart-left"><span id="cart-count">0 позиций</span>Ваш заказ</div>
           <div class="phone-cart-right" id="cart-total">0 сум</div>
         </div>
       </div>
-
-      <!-- AI Badge -->
       <div class="ai-badge" id="ai-badge" style="display:none;">
-        <div class="ai-badge-label">🤖 YummAI предлагает</div>
-        <div class="ai-badge-text" id="ai-text">К манты берут чай с молоком</div>
-        <div class="ai-badge-sub">+12 000 сум → добавить?</div>
+        <div class="ai-badge-label">AI предлагает</div>
+        <div class="ai-badge-text" id="ai-text">К мантам берут зелёный чай</div>
+        <div class="ai-badge-sub">+8 000 сум</div>
       </div>
     </div>
 
     <div class="demo-info">
-      <div class="section-eyebrow">Экран гостя</div>
-      <h2>Заказ без<br>официанта</h2>
-      <p>Гость сканирует QR — и видит полное меню с фото. Нажимает «+» — заказ летит прямо на кухню. AI сам предлагает дополнения.</p>
+      <div class="hero-eyebrow"><span class="rule"></span>Экран гостя</div>
+      <h2>Заказ без официанта,<br>с первого касания</h2>
+      <p>Гость сканирует QR — видит полное меню с фото. Нажимает «+» — заказ летит прямо на кухню. AI сам предлагает дополнения, пока человек ещё выбирает.</p>
 
       <div class="feature-list">
         <div class="feature-item">
-          <div class="feature-icon orange">📱</div>
-          <div>
-            <div class="feature-title">QR на каждом столе</div>
-            <div class="feature-desc">Нет приложения. Просто камера телефона → меню открывается мгновенно</div>
-          </div>
+          <div class="feature-num">01</div>
+          <div><div class="feature-title">QR на каждом столе</div><div class="feature-desc">Без установки приложения — меню открывается прямо в браузере телефона за секунду.</div></div>
         </div>
         <div class="feature-item">
-          <div class="feature-icon green">🤖</div>
-          <div>
-            <div class="feature-title">AI-апселл в реальном времени</div>
-            <div class="feature-desc">Добавил манты — AI предлагает чай. Средний чек растёт сам.</div>
-          </div>
+          <div class="feature-num">02</div>
+          <div><div class="feature-title">AI-рекомендации в реальном времени</div><div class="feature-desc">Добавил манты — система предлагает чай. Средний чек растёт без участия персонала.</div></div>
         </div>
         <div class="feature-item">
-          <div class="feature-icon blue">💳</div>
-          <div>
-            <div class="feature-title">Оплата Click / Payme</div>
-            <div class="feature-desc">Гость платит сам. Без терминала, без сдачи, без очереди.</div>
-          </div>
+          <div class="feature-num">03</div>
+          <div><div class="feature-title">Оплата Click или Payme</div><div class="feature-desc">Гость платит сам, без терминала, без очереди и без сдачи наличными.</div></div>
         </div>
       </div>
-
-      <div style="margin-top:28px;">
-        <button class="btn-primary" onclick="showScreen('kitchen')">→ Посмотреть кухню</button>
-      </div>
+      <div style="margin-top:32px;"><button class="btn-primary" onclick="showScreen('kitchen')">Смотреть экран кухни →</button></div>
     </div>
   </div>
 
-  <!-- AI Upsell Modal -->
-  <div id="upsell-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:200; display:none; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
-    <div style="background:var(--surface); border:1px solid var(--border); border-radius:24px; padding:32px; max-width:340px; width:90%; text-align:center;">
-      <div style="font-size:48px; margin-bottom:16px;">🤖</div>
-      <div style="font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:8px;">YummAI рекомендует</div>
-      <h3 style="font-size:20px; font-weight:700; margin-bottom:8px;">Добавьте к заказу</h3>
-      <p style="color:var(--muted); font-size:14px; margin-bottom:24px;">Гости которые заказывают манты, чаще всего берут зелёный чай 🍵</p>
-      <div style="background:var(--surface2); border-radius:12px; padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:20px; text-align:left;">
-        <div style="font-size:32px;">🍵</div>
-        <div style="flex:1;">
-          <div style="font-weight:600;">Зелёный чай</div>
-          <div style="font-size:12px; color:var(--muted);">Чайник 500мл</div>
-        </div>
-        <div style="font-weight:700; color:var(--accent);">8 000</div>
+  <div id="upsell-modal">
+    <div class="upsell-card">
+      <div class="icon">🍵</div>
+      <div class="tag">YummAI рекомендует</div>
+      <h3>Добавить к заказу?</h3>
+      <div class="desc">Гости, которые заказывают манты, чаще всего берут зелёный чай.</div>
+      <div class="upsell-item-row">
+        <div class="ico">🍵</div>
+        <div><div class="name">Зелёный чай</div><div class="sub">Чайник, 500 мл</div></div>
+        <div class="price">8 000</div>
       </div>
-      <div style="display:flex; gap:10px;">
-        <button onclick="closeUpsell()" style="flex:1; padding:12px; border-radius:10px; background:none; border:1px solid var(--border); color:var(--text); font-size:14px; cursor:pointer;">Нет, спасибо</button>
-        <button onclick="acceptUpsell()" style="flex:1; padding:12px; border-radius:10px; background:var(--accent); color:white; font-size:14px; font-weight:600; border:none; cursor:pointer;">Добавить!</button>
+      <div class="upsell-actions">
+        <button class="upsell-decline" onclick="closeUpsell()">Нет, спасибо</button>
+        <button class="upsell-accept" onclick="acceptUpsell()">Добавить</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     SCREEN: KITCHEN
-═══════════════════════════════════════════════════════ -->
+<!-- ═══════════ KITCHEN ═══════════ -->
 <div class="screen" id="screen-kitchen">
   <div class="section">
-    <div class="section-eyebrow">Kitchen Display System</div>
-    <div class="section-title">Кухня видит всё<br>в реальном времени</div>
-    <div class="section-sub">Повар получает заказ за секунды. Без бумаги, без крика, без ошибок.</div>
-
-    <div style="display:flex; align-items:center; gap:16px; margin-top:32px; margin-bottom:16px;">
-      <div style="display:flex; gap:8px; flex:1;">
-        <div style="padding:6px 14px; border-radius:8px; background:rgba(255,107,43,0.1); border:1px solid rgba(255,107,43,0.3); font-size:12px; font-weight:600; color:var(--accent);">
-          🔴 Новые: <span id="new-count">2</span>
-        </div>
-        <div style="padding:6px 14px; border-radius:8px; background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.3); font-size:12px; font-weight:600; color:var(--yellow);">
-          🟡 Готовится: <span id="cook-count">1</span>
-        </div>
-        <div style="padding:6px 14px; border-radius:8px; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); font-size:12px; font-weight:600; color:var(--green);">
-          🟢 Готово: <span id="ready-count">1</span>
-        </div>
+    <div class="section-head">
+      <div class="section-num">04 — кухня</div>
+      <div>
+        <div class="section-title">Кухня видит заказ<br>раньше, чем он остыл в голове официанта</div>
+        <div class="section-sub">Экран вместо бумаги. Статус вместо крика через раздачу.</div>
       </div>
-      <button onclick="addNewOrder()" class="btn-primary" style="padding:10px 20px; font-size:13px;">+ Новый заказ</button>
+    </div>
+
+    <div class="kitchen-toolbar">
+      <div class="k-tag new">Новые — <span id="new-count">2</span></div>
+      <div class="k-tag cooking">Готовится — <span id="cook-count">1</span></div>
+      <div class="k-tag ready">Готово — <span id="ready-count">1</span></div>
+      <button onclick="addNewOrder()" class="btn-primary" style="margin-left:auto; padding:10px 18px; font-size:13px;">+ Новый заказ</button>
     </div>
 
     <div class="kitchen-grid" id="kitchen-grid">
       <div class="kitchen-card new">
-        <div class="kc-header">
-          <div class="kc-table">Стол №3</div>
-          <div class="kc-time">2 мин назад</div>
-        </div>
+        <div class="kc-header"><div class="kc-table">Стол №3</div><div class="kc-time">2 мин назад</div></div>
         <div class="kc-status new">Новый</div>
-        <div class="kc-items">
-          <strong>2×</strong> Манты с бараниной<br>
-          <strong>1×</strong> Ачичук<br>
-          <strong>2×</strong> Зелёный чай
-        </div>
-        <button class="kc-action" onclick="advanceOrder(this)">✓ Взять в работу</button>
+        <div class="kc-items"><strong>2×</strong> Манты с бараниной<br><strong>1×</strong> Ачичук<br><strong>2×</strong> Зелёный чай</div>
+        <button class="kc-action" onclick="advanceOrder(this)">Взять в работу</button>
       </div>
-
       <div class="kitchen-card new">
-        <div class="kc-header">
-          <div class="kc-table">Стол №7</div>
-          <div class="kc-time">5 мин назад</div>
-        </div>
+        <div class="kc-header"><div class="kc-table">Стол №7</div><div class="kc-time">5 мин назад</div></div>
         <div class="kc-status new">Новый</div>
-        <div class="kc-items">
-          <strong>1×</strong> Лагман<br>
-          <strong>1×</strong> Зелёный чай
-        </div>
-        <button class="kc-action" onclick="advanceOrder(this)">✓ Взять в работу</button>
+        <div class="kc-items"><strong>1×</strong> Лагман<br><strong>1×</strong> Зелёный чай</div>
+        <button class="kc-action" onclick="advanceOrder(this)">Взять в работу</button>
       </div>
-
       <div class="kitchen-card cooking">
-        <div class="kc-header">
-          <div class="kc-table">Стол №1</div>
-          <div class="kc-time">12 мин назад</div>
-        </div>
+        <div class="kc-header"><div class="kc-table">Стол №1</div><div class="kc-time">12 мин назад</div></div>
         <div class="kc-status cooking">Готовится</div>
-        <div class="kc-items">
-          <strong>3×</strong> Шашлык<br>
-          <strong>2×</strong> Лепёшка<br>
-          <strong>3×</strong> Айран
-        </div>
-        <button class="kc-action" onclick="advanceOrder(this)">✓ Готово</button>
+        <div class="kc-items"><strong>3×</strong> Шашлык<br><strong>2×</strong> Лепёшка<br><strong>3×</strong> Айран</div>
+        <button class="kc-action" onclick="advanceOrder(this)">Готово</button>
       </div>
-
       <div class="kitchen-card ready">
-        <div class="kc-header">
-          <div class="kc-table">Стол №5</div>
-          <div class="kc-time">18 мин назад</div>
-        </div>
+        <div class="kc-header"><div class="kc-table">Стол №5</div><div class="kc-time">18 мин назад</div></div>
         <div class="kc-status ready">Готово</div>
-        <div class="kc-items">
-          <strong>2×</strong> Плов<br>
-          <strong>2×</strong> Салат Ташкент
-        </div>
-        <button class="kc-action" onclick="advanceOrder(this)">✓ Подано</button>
+        <div class="kc-items"><strong>2×</strong> Плов<br><strong>2×</strong> Салат Ташкент</div>
+        <button class="kc-action" onclick="advanceOrder(this)">Подано</button>
       </div>
     </div>
 
-    <div style="margin-top:48px; text-align:center;">
-      <button class="btn-primary" onclick="showScreen('analytics')">→ Смотреть аналитику</button>
+    <div style="margin-top:56px; text-align:center;">
+      <button class="btn-primary" onclick="showScreen('analytics')">Смотреть аналитику →</button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     SCREEN: ANALYTICS
-═══════════════════════════════════════════════════════ -->
+<!-- ═══════════ ANALYTICS ═══════════ -->
 <div class="screen" id="screen-analytics">
   <div class="section">
-    <div class="section-eyebrow">Аналитика владельца</div>
-    <div class="section-title">Данные которых<br>никогда не было</div>
-    <div class="section-sub">Впервые в истории ресторан в Нукусе знает что продаётся и почему.</div>
+    <div class="section-head">
+      <div class="section-num">05 — аналитика</div>
+      <div>
+        <div class="section-title">Данные, которых<br>у ресторана раньше не было</div>
+        <div class="section-sub">Впервые владелец видит, что продаётся и почему — а не угадывает.</div>
+      </div>
+    </div>
 
     <div class="analytics-grid">
       <div class="analytics-card">
-        <div class="ac-title">Выручка по дням недели (×1000 сум)</div>
+        <div class="ac-title">ВЫРУЧКА ПО ДНЯМ НЕДЕЛИ, ×1000 СУМ</div>
         <div class="chart-bars">
-          <div class="bar-wrap">
-            <div class="bar" style="height:55%"></div>
-            <div class="bar-label">Пн</div>
-          </div>
-          <div class="bar-wrap">
-            <div class="bar" style="height:65%"></div>
-            <div class="bar-label">Вт</div>
-          </div>
-          <div class="bar-wrap">
-            <div class="bar" style="height:72%"></div>
-            <div class="bar-label">Ср</div>
-          </div>
-          <div class="bar-wrap">
-            <div class="bar" style="height:80%"></div>
-            <div class="bar-label">Чт</div>
-          </div>
-          <div class="bar-wrap">
-            <div class="bar" style="height:100%"></div>
-            <div class="bar-label">Пт</div>
-          </div>
-          <div class="bar-wrap">
-            <div class="bar" style="height:95%"></div>
-            <div class="bar-label">Сб</div>
-          </div>
-          <div class="bar-wrap">
-            <div class="bar dimmed" style="height:40%"></div>
-            <div class="bar-label">Вс</div>
-          </div>
+          <div class="bar-wrap"><div class="bar" style="height:55%"></div><div class="bar-label">ПН</div></div>
+          <div class="bar-wrap"><div class="bar" style="height:65%"></div><div class="bar-label">ВТ</div></div>
+          <div class="bar-wrap"><div class="bar" style="height:72%"></div><div class="bar-label">СР</div></div>
+          <div class="bar-wrap"><div class="bar" style="height:80%"></div><div class="bar-label">ЧТ</div></div>
+          <div class="bar-wrap"><div class="bar" style="height:100%"></div><div class="bar-label">ПТ</div></div>
+          <div class="bar-wrap"><div class="bar" style="height:95%"></div><div class="bar-label">СБ</div></div>
+          <div class="bar-wrap"><div class="bar dimmed" style="height:40%"></div><div class="bar-label">ВС</div></div>
         </div>
-
-        <div class="metrics-list" style="margin-top:24px;">
-          <div class="metric-row">
-            <span class="metric-label">Выручка сегодня</span>
-            <span class="metric-val orange">2 847 000 сум</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Средний чек</span>
-            <span class="metric-val">87 500 сум</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Рост через AI-апселл</span>
-            <span class="metric-val green">+23%</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Заказов обработано</span>
-            <span class="metric-val">32</span>
-          </div>
+        <div class="metrics-list">
+          <div class="metric-row"><span class="metric-label">Выручка сегодня</span><span class="metric-val orange">2 847 000 сум</span></div>
+          <div class="metric-row"><span class="metric-label">Средний чек</span><span class="metric-val">87 500 сум</span></div>
+          <div class="metric-row"><span class="metric-label">Рост через AI</span><span class="metric-val green">+23%</span></div>
+          <div class="metric-row"><span class="metric-label">Заказов обработано</span><span class="metric-val">32</span></div>
         </div>
       </div>
 
       <div class="analytics-card">
-        <div class="ac-title">Топ блюда по выручке</div>
+        <div class="ac-title">ТОП БЛЮД ПО ВЫРУЧКЕ</div>
         <div class="top-dishes">
-          <div class="dish-row">
-            <div class="dish-rank">1</div>
-            <div class="dish-name">Шашлык</div>
-            <div class="dish-bar-wrap"><div class="dish-bar" style="width:100%"></div></div>
-            <div class="dish-pct">34%</div>
-          </div>
-          <div class="dish-row">
-            <div class="dish-rank">2</div>
-            <div class="dish-name">Манты</div>
-            <div class="dish-bar-wrap"><div class="dish-bar" style="width:72%"></div></div>
-            <div class="dish-pct">24%</div>
-          </div>
-          <div class="dish-row">
-            <div class="dish-rank">3</div>
-            <div class="dish-name">Плов</div>
-            <div class="dish-bar-wrap"><div class="dish-bar" style="width:54%"></div></div>
-            <div class="dish-pct">18%</div>
-          </div>
-          <div class="dish-row">
-            <div class="dish-rank">4</div>
-            <div class="dish-name">Лагман</div>
-            <div class="dish-bar-wrap"><div class="dish-bar" style="width:36%"></div></div>
-            <div class="dish-pct">12%</div>
-          </div>
-          <div class="dish-row">
-            <div class="dish-rank">5</div>
-            <div class="dish-name">Зел. чай</div>
-            <div class="dish-bar-wrap"><div class="dish-bar" style="width:24%"></div></div>
-            <div class="dish-pct">8%</div>
-          </div>
+          <div class="dish-row"><div class="dish-rank">1</div><div class="dish-name">Шашлык</div><div class="dish-bar-wrap"><div class="dish-bar" style="width:100%"></div></div><div class="dish-pct">34%</div></div>
+          <div class="dish-row"><div class="dish-rank">2</div><div class="dish-name">Манты</div><div class="dish-bar-wrap"><div class="dish-bar" style="width:72%"></div></div><div class="dish-pct">24%</div></div>
+          <div class="dish-row"><div class="dish-rank">3</div><div class="dish-name">Плов</div><div class="dish-bar-wrap"><div class="dish-bar" style="width:54%"></div></div><div class="dish-pct">18%</div></div>
+          <div class="dish-row"><div class="dish-rank">4</div><div class="dish-name">Лагман</div><div class="dish-bar-wrap"><div class="dish-bar" style="width:36%"></div></div><div class="dish-pct">12%</div></div>
+          <div class="dish-row"><div class="dish-rank">5</div><div class="dish-name">Зел. чай</div><div class="dish-bar-wrap"><div class="dish-bar" style="width:24%"></div></div><div class="dish-pct">8%</div></div>
         </div>
-
-        <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border);">
-          <div style="font-size:11px; color:var(--muted); margin-bottom:8px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">AI-инсайт</div>
-          <div style="font-size:13px; color:var(--text); line-height:1.5;">
-            🤖 Пятница — самый прибыльный день. Шашлык + айран = топ-связка. Рекомендуем добавить скидку -10% на шашлык в понедельник для роста трафика.
-          </div>
+        <div class="insight-box">
+          <div class="insight-label">AI-ИНСАЙТ</div>
+          <div class="insight-text">Пятница — самый прибыльный день. Шашлык и айран — лучшая связка. Скидка −10% на шашлык в понедельник может поднять трафик в начале недели.</div>
         </div>
       </div>
     </div>
 
-    <div style="margin-top:48px; text-align:center;">
-      <button class="btn-primary" onclick="showScreen('scope')">→ Бриф для iTechnolabs</button>
+    <div style="margin-top:56px; text-align:center;">
+      <button class="btn-primary" onclick="showScreen('scope')">Читать бриф для разработчиков →</button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     SCREEN: SCOPE / BRIEF
-═══════════════════════════════════════════════════════ -->
+<!-- ═══════════ SCOPE ═══════════ -->
 <div class="screen" id="screen-scope">
   <div class="section">
-    <div class="section-eyebrow">Документация проекта</div>
-    <div class="section-title">YummAI — Scope of Work<br>для iTechnolabs</div>
-    <div class="section-sub">Технический бриф и питч для команды разработки</div>
-
-    <div class="scope-section">
-      <h3>📋 Project Brief — YummAI Restaurant Platform</h3>
-
-      <div class="scope-block">
-        <h4>Кто мы</h4>
-        <ul class="scope-list">
-          <li>Основатель: Erka Maratov, Нукус, Узбекистан (Каракалпакстан)</li>
-          <li>Background: Co-founder FLY TAXI (4+ лет, ridesharing в Нукусе), CS-degree TATU</li>
-          <li>Параллельный проект: SPOT — самая технологичная транспортная платформа Центральной Азии (в разработке с iTechnolabs)</li>
-          <li>Миссия: строить технологические продукты мирового уровня для рынка Центральной Азии</li>
-        </ul>
+    <div class="section-head">
+      <div class="section-num">06 — документация</div>
+      <div>
+        <div class="section-title">YummAI — Scope of Work</div>
+        <div class="section-sub">Технический бриф для команды разработки.</div>
       </div>
-      <div class="scope-divider"></div>
+    </div>
 
-      <div class="scope-block">
-        <h4>Что такое YummAI</h4>
-        <ul class="scope-list">
-          <li>SaaS-платформа для автоматизации ресторанов — QR-меню, AI-апселл, кухонный дисплей, аналитика</li>
-          <li>Целевой рынок: рестораны Узбекистана (Ташкент, Самарканд, Нукус) — первая фаза</li>
-          <li>Далее: Казахстан, Кыргызстан, Таджикистан</li>
-          <li>Аналоги: Toast (США), iiko (РФ) — но адаптированные под локальный рынок с AI-слоем</li>
-        </ul>
-      </div>
-      <div class="scope-divider"></div>
+    <div class="scope-wrap">
+      <div class="scope-section">
+        <h3>Project Brief — YummAI Restaurant Platform</h3>
 
-      <div class="scope-block">
-        <h4>Ключевые модули (MVP)</h4>
-        <ul class="scope-list">
-          <li>QR-меню: PWA без установки, фото блюд, категории, описания, аллергены</li>
-          <li>Заказ со стола: корзина, модификаторы, комментарии к заказу</li>
-          <li>AI Upsell Engine: рекомендации на основе истории заказов и ассоциативных правил</li>
-          <li>Kitchen Display System (KDS): WebSocket real-time, статусы NEW → COOKING → READY → SERVED</li>
-          <li>Оплата: Click API, Payme API, наличные с фиксацией</li>
-          <li>Аналитика: выручка по дням/блюдам/столам, средний чек, AI-инсайты</li>
-          <li>Панель владельца: управление меню, столами, ценами, акциями</li>
-          <li>R-Keeper интеграция: JSON-RPC bridge для ресторанов с существующей кассой</li>
-        </ul>
-      </div>
-      <div class="scope-divider"></div>
+        <div class="scope-block">
+          <h4>Кто мы</h4>
+          <ul class="scope-list">
+            <li>Основатель: Erka Maratov, Нукус, Узбекистан (Каракалпакстан)</li>
+            <li>Co-founder FLY TAXI (4+ лет, ridesharing в Нукусе), CS-degree TATU</li>
+            <li>Параллельный проект: SPOT — транспортная платформа Центральной Азии</li>
+            <li>Миссия: технологические продукты мирового уровня для рынка Центральной Азии</li>
+          </ul>
+        </div>
+        <div class="scope-divider"></div>
 
-      <div class="scope-block">
-        <h4>Технический стек (предложенный)</h4>
-        <ul class="scope-list">
-          <li>Backend: NestJS + TypeScript, PostgreSQL + Prisma ORM, Redis (кеш + pub/sub)</li>
-          <li>Frontend: React + Tailwind CSS + Zustand (state)</li>
-          <li>Real-time: WebSocket (Socket.IO) для KDS и live-обновлений</li>
-          <li>PWA: Workbox + IndexedDB (offline-first для гостевого меню)</li>
-          <li>Payments: Click API + Payme API (нативные UZS интеграции)</li>
-          <li>SMS: Eskiz.uz или Playmobile (верификация, чеки)</li>
-          <li>AI: GPT-4 API или локальная ML-модель для recommendation engine</li>
-          <li>Infra: Docker, CI/CD, облако (AWS/DigitalOcean/локальный хостинг)</li>
-        </ul>
-      </div>
-      <div class="scope-divider"></div>
+        <div class="scope-block">
+          <h4>Что такое YummAI</h4>
+          <ul class="scope-list">
+            <li>SaaS-платформа автоматизации ресторанов: QR-меню, AI-рекомендации, кухонный экран, аналитика</li>
+            <li>Целевой рынок: Узбекистан (Ташкент, Самарканд, Нукус) — первая фаза</li>
+            <li>Далее: Казахстан, Кыргызстан, Таджикистан</li>
+            <li>Аналоги: Toast (США), iiko (РФ) — но с локальными платежами и AI-слоем</li>
+          </ul>
+        </div>
+        <div class="scope-divider"></div>
 
-      <div class="scope-block">
-        <h4>Бизнес-модель</h4>
-        <ul class="scope-list">
-          <li>SaaS подписка: 1 500 000 — 2 500 000 UZS/месяц (≈ $120–$200)</li>
-          <li>Окупаемость клиента: 1 месяц (рост чека +23% перекрывает стоимость)</li>
-          <li>Target Year 1: 50 ресторанов → 75M–125M UZS/месяц MRR</li>
-          <li>Уникальное преимущество: первый AI-powered ресторанный SaaS в Узбекистане</li>
-        </ul>
-      </div>
-      <div class="scope-divider"></div>
+        <div class="scope-block">
+          <h4>Ключевые модули MVP</h4>
+          <ul class="scope-list">
+            <li>QR-меню: PWA без установки, фото блюд, категории, аллергены</li>
+            <li>Заказ со стола: корзина, модификаторы, комментарии</li>
+            <li>AI Upsell Engine: ассоциативные правила + ML на истории заказов</li>
+            <li>Kitchen Display System: WebSocket real-time, статусы NEW → COOKING → READY → SERVED</li>
+            <li>Оплата: Click API, Payme API, наличные с фиксацией</li>
+            <li>Аналитика: выручка по дням / блюдам / столам, AI-инсайты</li>
+            <li>Панель владельца: меню, столы, цены, акции</li>
+            <li>R-Keeper интеграция: JSON-RPC bridge для существующих касс</li>
+          </ul>
+        </div>
+        <div class="scope-divider"></div>
 
-      <div class="scope-block">
-        <h4>Что нужно от iTechnolabs</h4>
-        <ul class="scope-list">
-          <li>Разработка MVP: 3-4 месяца, полный цикл (дизайн → бэкенд → фронт → деплой)</li>
-          <li>Мобильная версия (PWA) + веб-панель для владельца</li>
-          <li>Интеграции: Click, Payme, R-Keeper, Eskiz.uz</li>
-          <li>AI-модуль: recommendation engine (можно старт с простыми ассоциативными правилами)</li>
-          <li>Документация и передача кода основателю</li>
-          <li>Post-launch поддержка 3 месяца</li>
-        </ul>
-      </div>
-      <div class="scope-divider"></div>
+        <div class="scope-block">
+          <h4>Технический стек</h4>
+          <ul class="scope-list">
+            <li>Backend: NestJS + TypeScript, PostgreSQL + Prisma, Redis</li>
+            <li>Frontend: React + Tailwind CSS + Zustand</li>
+            <li>Real-time: Socket.IO (WebSocket)</li>
+            <li>PWA: Workbox + IndexedDB (offline-first)</li>
+            <li>Payments: Click API + Payme API</li>
+            <li>SMS: Eskiz.uz / Playmobile</li>
+            <li>AI: GPT-4 API или собственная recommendation engine</li>
+            <li>Infra: Docker, CI/CD</li>
+          </ul>
+        </div>
+        <div class="scope-divider"></div>
 
-      <div class="scope-footer">
-        <strong style="color:var(--text);">Контакт:</strong> Erka Maratov · Nukus, Uzbekistan<br>
-        GitHub: cryptaerka-hash · Telegram: @linkonetaxi_bot<br><br>
-        Этот документ создан как часть YummAI pitch materials. Прототип доступен онлайн.
+        <div class="scope-block">
+          <h4>Бизнес-модель</h4>
+          <ul class="scope-list">
+            <li>SaaS подписка: 1 500 000 — 2 500 000 UZS/месяц (≈ $120–$200)</li>
+            <li>Окупаемость клиента: 1 месяц</li>
+            <li>Target Year 1: 50 ресторанов → 75M–125M UZS/месяц MRR</li>
+            <li>Первый AI-powered ресторанный SaaS в Узбекистане</li>
+          </ul>
+        </div>
+        <div class="scope-divider"></div>
+
+        <div class="scope-block">
+          <h4>Что нужно от команды разработки</h4>
+          <ul class="scope-list">
+            <li>MVP за 3–4 месяца: дизайн → бэкенд → фронт → деплой</li>
+            <li>PWA + веб-панель для владельца</li>
+            <li>Интеграции: Click, Payme, R-Keeper, Eskiz.uz</li>
+            <li>AI-модуль рекомендаций (старт с простыми ассоциативными правилами)</li>
+            <li>Документация и передача кода</li>
+            <li>Поддержка 3 месяца после запуска</li>
+          </ul>
+        </div>
+        <div class="scope-divider"></div>
+
+        <div class="scope-footer">
+          <strong style="color:var(--ink);">Контакт:</strong> Erka Maratov · Nukus, Uzbekistan<br>
+          GitHub: cryptaerka-hash · Telegram: <a href="https://t.me/erkamaratov" target="_blank">@erkamaratov</a>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- FOOTER -->
 <footer>
-  <div class="footer-logo">Yumm<span>AI</span></div>
-  <div class="footer-tagline">Самая технологичная ресторанная платформа Центральной Азии</div>
+  <div class="footer-logo" onclick="showScreen('home')" style="cursor:pointer;">Yumm<span class="ai">AI</span></div>
+  <div class="footer-tagline">Платформа для ресторанов Центральной Азии</div>
   <div class="footer-links">
     <span class="footer-link" onclick="showScreen('home')">Главная</span>
     <span class="footer-link" onclick="showScreen('guest')">Демо гостя</span>
@@ -1135,11 +1004,12 @@
     <span class="footer-link" onclick="showScreen('analytics')">Аналитика</span>
     <span class="footer-link" onclick="showScreen('scope')">Бриф</span>
   </div>
-  <div class="footer-bottom">© 2025 YummAI · Nukus, Uzbekistan · Built by Erka Maratov</div>
+  <div class="footer-bottom">© 2026 YUMMAI · NUKUS, UZBEKISTAN · BUILT BY ERKA MARATOV</div>
 </footer>
 
 <script>
-// ─── NAVIGATION ───
+function goTelegram() { window.open('https://t.me/erkamaratov', '_blank'); }
+
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + id).classList.add('active');
@@ -1150,85 +1020,63 @@ function showScreen(id) {
   window.scrollTo(0,0);
 }
 
-// ─── CART ───
 let cart = { count:0, total:0 };
 let aiShown = false;
 
 function addToCart(el, name, price) {
-  const p = parseInt(price.replace(/\s/g,'').replace('000','')) * 1000;
+  const p = parseInt(price, 10);
   cart.count++;
   cart.total += p;
   const bar = document.getElementById('cart-bar');
   bar.style.display = 'flex';
   document.getElementById('cart-count').textContent = cart.count + (cart.count === 1 ? ' позиция' : cart.count < 5 ? ' позиции' : ' позиций');
   document.getElementById('cart-total').textContent = cart.total.toLocaleString('ru') + ' сум';
-
-  // pulse animation
   const btn = el.querySelector('.add-btn');
   if(btn){ btn.style.transform='scale(1.3)'; setTimeout(()=>btn.style.transform='',200); }
-
-  // show AI upsell after first manti
-  if(!aiShown && name.includes('Манты')) {
-    aiShown = true;
-    setTimeout(showUpsell, 1200);
-  }
+  if(!aiShown && name.includes('Манты')) { aiShown = true; setTimeout(showUpsell, 1200); }
 }
 
 function showCart() {
-  alert('🛒 Заказ отправлен на кухню!\n\nПозиций: ' + cart.count + '\nСумма: ' + cart.total.toLocaleString('ru') + ' сум\n\n✅ Статус: Принят на кухне\nОплата: Click / Payme');
+  alert('Заказ отправлен на кухню!\n\nПозиций: ' + cart.count + '\nСумма: ' + cart.total.toLocaleString('ru') + ' сум\n\nСтатус: принят на кухне\nОплата: Click / Payme');
 }
 
-// ─── UPSELL ───
 function showUpsell() {
-  const m = document.getElementById('upsell-modal');
-  m.style.display = 'flex';
-  const badge = document.getElementById('ai-badge');
-  badge.style.display = 'block';
+  document.getElementById('upsell-modal').style.display = 'flex';
+  document.getElementById('ai-badge').style.display = 'block';
 }
 function closeUpsell() { document.getElementById('upsell-modal').style.display = 'none'; }
 function acceptUpsell() {
-  cart.count++;
-  cart.total += 8000;
+  cart.count++; cart.total += 8000;
   document.getElementById('cart-count').textContent = cart.count + ' позиции';
   document.getElementById('cart-total').textContent = cart.total.toLocaleString('ru') + ' сум';
   closeUpsell();
 }
 
-// ─── MENU FILTER ───
 function filterMenu(btn, cat) {
   document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
   document.querySelectorAll('.menu-item').forEach(item => {
-    if(cat === 'all' || item.dataset.cat === cat) {
-      item.style.display = 'flex';
-    } else {
-      item.style.display = 'none';
-    }
+    item.style.display = (cat === 'all' || item.dataset.cat === cat) ? 'flex' : 'none';
   });
 }
 
-// ─── KITCHEN ───
 const statusCycle = {
-  new: { next:'cooking', label:'Готовится', btnText:'✓ Готово', cls:'cooking' },
-  cooking: { next:'ready', label:'Готово', btnText:'✓ Подано', cls:'ready' },
-  ready: { next:'done', label:'Подано', btnText:'Закрыто', cls:'' }
+  new: { cls:'cooking', label:'Готовится', btnText:'Готово' },
+  cooking: { cls:'ready', label:'Готово', btnText:'Подано' },
+  ready: { cls:'done', label:'Подано', btnText:'Закрыто' }
 };
 
 function advanceOrder(btn) {
   const card = btn.closest('.kitchen-card');
   const currentClass = ['new','cooking','ready'].find(c => card.classList.contains(c));
-  if(!currentClass || currentClass === 'done') return;
-
+  if(!currentClass) return;
   const next = statusCycle[currentClass];
   card.classList.remove(currentClass);
-  card.classList.add(next.cls || 'ready');
-  card.querySelector('.kc-status').className = 'kc-status ' + next.cls;
+  card.classList.add(next.cls === 'done' ? 'ready' : next.cls);
+  card.querySelector('.kc-status').className = 'kc-status ' + (next.cls === 'done' ? 'ready' : next.cls);
   card.querySelector('.kc-status').textContent = next.label;
   btn.textContent = next.btnText;
-  btn.className = 'kc-action';
-
   updateCounts();
-
   if(currentClass === 'ready') {
     setTimeout(() => { card.style.opacity='0'; card.style.transform='scale(0.95)'; setTimeout(()=>card.remove(), 300); }, 800);
   }
@@ -1240,9 +1088,7 @@ function updateCounts() {
   document.getElementById('ready-count').textContent = document.querySelectorAll('.kitchen-card.ready').length;
 }
 
-let orderCount = 10;
 function addNewOrder() {
-  orderCount++;
   const tables = ['2','4','6','8','9'];
   const dishes = [
     '<strong>2×</strong> Плов Узбекский<br><strong>1×</strong> Лепёшка<br><strong>2×</strong> Айран',
@@ -1251,17 +1097,14 @@ function addNewOrder() {
   ];
   const table = tables[Math.floor(Math.random()*tables.length)];
   const dish = dishes[Math.floor(Math.random()*dishes.length)];
-
   const card = document.createElement('div');
   card.className = 'kitchen-card new';
-  card.style.opacity = '0';
-  card.style.transform = 'translateY(-10px)';
+  card.style.opacity = '0'; card.style.transform = 'translateY(-10px)';
   card.innerHTML = `
     <div class="kc-header"><div class="kc-table">Стол №${table}</div><div class="kc-time">только что</div></div>
     <div class="kc-status new">Новый</div>
     <div class="kc-items">${dish}</div>
-    <button class="kc-action" onclick="advanceOrder(this)">✓ Взять в работу</button>
-  `;
+    <button class="kc-action" onclick="advanceOrder(this)">Взять в работу</button>`;
   document.getElementById('kitchen-grid').prepend(card);
   setTimeout(()=>{ card.style.transition='all 0.4s'; card.style.opacity='1'; card.style.transform='translateY(0)'; },50);
   updateCounts();
